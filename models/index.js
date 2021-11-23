@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const connectionString = process.env.MONGO_URI || 'mongodb://localhost:27017/ecommerce'
+//const connectionString = process.env.MONGO_URI || 'mongodb://localhost:27017/ecommerce'
+
+const connectionString = process.env.MONGO_URI
 
 const configOptions ={
     useNewUrlParser:true,
@@ -20,6 +22,6 @@ mongoose.connect(connectionString,configOptions)
 )
 
 module.exports={
-    
+
 }
 
