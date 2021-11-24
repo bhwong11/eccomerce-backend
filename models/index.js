@@ -22,6 +22,10 @@ mongoose.connect(connectionString,configOptions)
 )
 
 module.exports={
-
+    User:require('./User'),
+    Review:require('./Review'),
+    Product:require('./Product'),
+    Category:require('./Category'),
+    Cart:require('./Cart'),
 }
 
