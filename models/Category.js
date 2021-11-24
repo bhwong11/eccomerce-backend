@@ -10,3 +10,7 @@ const CategorySchema = new mongoose.Schema({
         ref:'Product',
     }],
 })
+
+const Category = mongoose.model('Category',CategorySchema);
+
+module.exports = Category;
