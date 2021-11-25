@@ -9,12 +9,12 @@ const ReviewSchema = new mongoose.Schema({
         type:String,
         default:'product title',
     },
-    Product:{
+    product:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Product',
         required:true,
     },
-    User:{
+    user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true,
