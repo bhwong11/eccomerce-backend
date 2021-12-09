@@ -2,6 +2,9 @@ const express = require('express');
 const {GraphQLServer} = require('graphql-yoga');
 const cors = require('cors');
 const {GraphQLDate} = require('graphql-iso-date');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 const app = express();
 
@@ -20,6 +23,7 @@ type User{
     username:String!
     email:String!
     signup_date:String!
+    token:String!
 }
 
 type Review{
@@ -63,6 +67,21 @@ type Query{
     products:[Product!]
     product(id:ID!):Product!
 }
+
+type Mutation{
+    registerUser(username:String!,email:String!, password:String!):String!
+    loginUser(username:String!, password:String!):String!
+    createReview(title:String!,content:String!,product:ID!,user:ID!):Review!
+    updateReview(id:ID!,title:String!,content:String!,product:ID!,user:ID!):Review!
+    deleteReview(id:ID!):Review!
+    createCart(user:ID!):Cart!
+    updateCart(id:ID!,products:[ID]):Cart!
+    deleteCart(id:ID!):Cart!
+    categories:[Category!]
+    category(id:ID!):Category
+    products:[Product!]
+    product(id:ID!):Product!
+}
 `;
 
 const resolvers ={
@@ -70,7 +89,7 @@ const resolvers ={
         user:async (parent,{id})=>{
             try{
                 const user = User.findById(id);
-                return user
+                return {user,token:''}
             }catch(err){
                 console.log(err)
                 return err
@@ -144,6 +163,49 @@ const resolvers ={
             }
         }
         ,
+    },
+    Mutation:{
+        registerUser:async (parent,{username,email,password})=>{
+            try{
+                const foundUserEmail = User.findOne({email:email})
+                if(foundUserEmail){
+                    return `User with this email already exist`
+                }
+                const foundUserUsername = User.findOne({username:username})
+                if(foundUserUsername){
+                    return `User with this username already exist`
+                }
+                if(foundUserEmail){
+                    return `User with this email already exist`
+                }
+
+                const salt = await bcrypt.genSalt(10);
+                const hash = await bcrypt.hash(password,salt);
+                const user = User.create({username,email,password:hash})
+                return `register user success`
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+            
+        },
+        loginUser:async (parent,{username,password})=>{
+            const foundUser = await db.User.findOne({username:req.body.username}).select('+password')
+            if(!foundUser){
+                return `inccorrect username or password`
+            }
+
+            const isMatch = bcrypt.compare(foundUser.password,password)
+
+            if(isMatch){
+                const token = jwt.sign({_id:createdUser._id},'supersecretwaffles',{
+                    expiresIn:'1d',
+                })
+                return {...foundUser,token}
+            }else{
+                return `password is not correct`
+            }
+        }
     }
 }
 
