@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 //models
-const {Product, Review, User }= require('./models');
+const {Product, Review, User, Cart, Category }= require('./models');
 
 app.get('/hello',(req,res)=>{
     return res.send('HELLO!')
@@ -36,7 +36,7 @@ type Review{
 
 type Cart{
     _id:ID!
-    user:User!
+    user:ID!
     products:[Product!]
 }
 
@@ -68,11 +68,13 @@ type Query{
 }
 
 type Mutation{
-    registerUser(username:String!,email:String!, password:String!):String!
-    loginUser(username:String!, password:String!):String!
+    registerUser(username:String!,email:String!, password:String!):User!
+    loginUser(username:String!, password:String!):User!
     createReview(title:String!,content:String!,product:ID!,user:ID!):Review!
     updateReview(id:ID!,title:String!,content:String!,product:ID!,user:ID!):Review!
     deleteReview(id:ID!):Review!
+    addToCart(id:ID!,product:ID!):Cart!
+    removeFromCart(id:ID!,product:ID!):Cart!
     updateCart(id:ID!,products:[ID]):Cart!
     deleteCart(id:ID!):Cart!
     createCategory(title:String!):Category!
@@ -167,23 +169,40 @@ const resolvers ={
     Mutation:{
         registerUser:async (parent,{username,email,password})=>{
             try{
-                const foundUserEmail = User.findOne({email:email})
+                const foundUserEmail = await User.findOne({email:email})
                 if(foundUserEmail){
-                    return `User with this email already exist`
+                    return {
+                        _id:'None',
+                        username:'user with that email already exist',
+                        email:'user with that email already exist',
+                        signup_date:'user with that email already exist',
+                        token:'none'
+                    }
                 }
-                const foundUserUsername = User.findOne({username:username})
+                const foundUserUsername = await User.findOne({username:username})
                 if(foundUserUsername){
-                    return `User with this username already exist`
-                }
-                if(foundUserEmail){
-                    return `User with this email already exist`
+                    return {
+                        _id:'None',
+                        username:'username already exist',
+                        email:'username already exist',
+                        signup_date:'username already exist',
+                        token:'none'
+                    }
                 }
                 
                 const salt = await bcrypt.genSalt(10);
                 const hash = await bcrypt.hash(password,salt);
                 const user = await User.create({username,email,password:hash})
-                const newCart = await Cart.create(user.id)
-                return user
+                const newCart = await Cart.create({user:user.id,products:[]})
+                console.log('HIT!!')
+                console.log({username:user.username,email:user.email,_id:user._id,signup_date:user.signup_date.toString(),token:'none'})
+                return {
+                    _id:user._id,
+                    username:user.username,
+                    email:user.email,
+                    signup_date:user.signup_date.toString(),
+                    token:'none'
+                }
             }catch(err){
                 console.log(err)
                 return `error occured ${err}`
@@ -239,6 +258,24 @@ const resolvers ={
             try{
                 const deletedReview = await Review.findByIdAndDelete(id)
                 return deletedReview
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        addToCart:async(parent,{id,product})=>{
+            try{
+                const updatedCart = await Cart.findByIdAndUpdate(id,{$push:{ products:product}});
+                return updatedCart
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        removeFromCart:async(parent,{id,product})=>{
+            try{
+                const updatedCart = await Cart.findByIdAndUpdate(id,{$pull:{ products:product}});
+                return updatedCart
             }catch(err){
                 console.log(err)
                 return `error occured ${err}`
@@ -337,7 +374,9 @@ const resolvers ={
     }
 }
 
-const server = new GraphQLServer({typeDefs,resolvers})
+const queries = require('./queries')
+
+const server = new GraphQLServer({typeDefs:queries.typeDefs,resolvers:queries.resolvers})
 
 server.start(({port})=>{
     console.log(`listening on port ${port}`)
