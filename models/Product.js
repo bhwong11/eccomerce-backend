@@ -18,10 +18,6 @@ const ProductSchema = new mongoose.Schema({
         type:String,
         default:"product description",
     },
-    cart:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Cart',
-    },
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',

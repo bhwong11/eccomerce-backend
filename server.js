@@ -30,8 +30,8 @@ type Review{
     _id:ID!
     title:String!
     content:String!
-    product:Product
-    user:User
+    product:Product!
+    user:User!
 }
 
 type Cart{
@@ -52,7 +52,6 @@ type Product{
     price:Int!
     image:String!
     description:String!
-    cart:Cart!
     user:User!
     category:Category!
 }
@@ -63,7 +62,7 @@ type Query{
     review(id:ID!):Review!
     cart(id:ID!):Cart!
     categories:[Category!]
-    category(id:ID!):Category
+    category(id:ID!):Category!
     products:[Product!]
     product(id:ID!):Product!
 }
@@ -74,13 +73,14 @@ type Mutation{
     createReview(title:String!,content:String!,product:ID!,user:ID!):Review!
     updateReview(id:ID!,title:String!,content:String!,product:ID!,user:ID!):Review!
     deleteReview(id:ID!):Review!
-    createCart(user:ID!):Cart!
     updateCart(id:ID!,products:[ID]):Cart!
     deleteCart(id:ID!):Cart!
-    categories:[Category!]
-    category(id:ID!):Category
-    products:[Product!]
-    product(id:ID!):Product!
+    createCategory(title:String!):Category!
+    updateCategory(id:ID!,title:String!):Category
+    deleteCategory(id:ID!):Category!
+    createProduct(title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!
+    updateProduct(id:ID!,title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!
+    deleteProduct(id:ID!):Product!
 }
 `;
 
@@ -178,11 +178,12 @@ const resolvers ={
                 if(foundUserEmail){
                     return `User with this email already exist`
                 }
-
+                
                 const salt = await bcrypt.genSalt(10);
                 const hash = await bcrypt.hash(password,salt);
-                const user = User.create({username,email,password:hash})
-                return `register user success`
+                const user = await User.create({username,email,password:hash})
+                const newCart = await Cart.create(user.id)
+                return user
             }catch(err){
                 console.log(err)
                 return `error occured ${err}`
@@ -190,7 +191,7 @@ const resolvers ={
             
         },
         loginUser:async (parent,{username,password})=>{
-            const foundUser = await db.User.findOne({username:req.body.username}).select('+password')
+            const foundUser = await db.User.findOne({username:username}).select('+password')
             if(!foundUser){
                 return `inccorrect username or password`
             }
@@ -205,7 +206,134 @@ const resolvers ={
             }else{
                 return `password is not correct`
             }
-        }
+        },
+        createReview: async (parent,{title,content,product,user})=>{
+            try{
+                const newReview = await Review.create({
+                    title,
+                    content,
+                    product,
+                    user,
+                })
+                return newReview
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        updateReview: async (parent,{id,title,content,product,user})=>{
+            try{
+                const updatedReview = await Review.findByIdAndUpdate(id,{
+                    title,
+                    content,
+                    product,
+                    user,
+                },{new:true})
+                return updatedReview
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        deleteReview: async (parent,{id})=>{
+            try{
+                const deletedReview = await Review.findByIdAndDelete(id)
+                return deletedReview
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        updateCart:async(parent,{id,products})=>{
+            try{
+                const updatedCart = await findByIdAndUpdate(id,{
+                    products
+                },{new:true})
+                return updatedCart
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        deleteCart:async(parent,{id})=>{
+            try{
+                const deletedCart = await findByIdAndDelete(id)
+                return deletedCart
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        createCategory: async(parent,{title})=>{
+            try{
+                const newCategory = await Category.create(title)
+                return newCategory
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        updateCategory: async(parent,{id,title})=>{
+            try{
+                const updatedCategory = await Category.findByIdAndUpate(id,{
+                    title
+                },{new:true})
+                return updatedCategory
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        deleteCategory: async(parent,{id})=>{
+            try{
+                const deletedCategory = await Category.findByIdAndDelete(id)
+                return deletedCategory
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        createProduct:async(parent,{title,price,image,description,user,category})=>{
+            try{
+                const newProduct = await Product.create({
+                    title,
+                    price,
+                    image,
+                    description,
+                    user,
+                    category,
+                })
+                return newProduct
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        updateProduct:async(parent,{id,title,price,image,description,user,category})=>{
+            try{
+                const updatedProduct = await Product.findByIdAndUpdate(id,{
+                    title,
+                    price,
+                    image,
+                    description,
+                    user,
+                    category,
+                },{new:true})
+                return updatedProduct
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
+        deleteProduct:async(parent,{id})=>{
+            try{
+                const deletedProduct = await Product.findByIdAndDelete(id)
+                return deletedProduct
+            }catch(err){
+                console.log(err)
+                return `error occured ${err}`
+            }
+        },
     }
 }
 
