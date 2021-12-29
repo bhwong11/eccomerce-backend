@@ -124,7 +124,7 @@ module.exports = {
     },
     addToCart:async(parent,{id,product})=>{
         try{
-            const updatedCart = await Cart.findByIdAndUpdate(id,{$push:{ products:product}});
+            const updatedCart = await Cart.findByIdAndUpdate(id,{$push:{ products:product}},{new:true});
             return updatedCart
         }catch(err){
             console.log(err)
@@ -133,7 +133,8 @@ module.exports = {
     },
     removeFromCart:async(parent,{id,product})=>{
         try{
-            const updatedCart = await Cart.findByIdAndUpdate(id,{$pull:{ products:product}});
+            const updatedCart = await Cart.findByIdAndUpdate(id,{$pull:{ products:product}},{new:true});
+            console.log(updatedCart)
             return updatedCart
         }catch(err){
             console.log(err)
@@ -142,9 +143,10 @@ module.exports = {
     },
     updateCart:async(parent,{id,products})=>{
         try{
-            const updatedCart = await findByIdAndUpdate(id,{
+            const updatedCart = await Cart.findByIdAndUpdate(id,{
                 products
             },{new:true})
+            console.log(updatedCart)
             return updatedCart
         }catch(err){
             console.log(err)

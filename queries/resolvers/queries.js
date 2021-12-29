@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     user:async (parent,{id})=>{
         try{
-            const user = User.findById(id);
+            const user = await User.findById(id);
             return {user,token:''}
         }catch(err){
             console.log(err)
