@@ -24,18 +24,16 @@ module.exports = {
                     token:'none'
                 }
             }
-            
+            console.log('PASSWORD',password)
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password,salt);
             const user = await User.create({username,email,password:hash})
             const newCart = await Cart.create({user:user.id,products:[]})
-            console.log('HIT!!')
-            console.log({username:user.username,email:user.email,_id:user._id,signup_date:user.signup_date.toString(),token:'none'})
             return {
                 _id:user._id,
                 username:user.username,
                 email:user.email,
-                signup_date:user.signup_date.toString(),
+                signup_date:user.signup_date.toDateString(),
                 token:'none'
             }
         }catch(err){
@@ -45,20 +43,50 @@ module.exports = {
         
     },
     loginUser:async (parent,{username,password})=>{
-        const foundUser = await db.User.findOne({username:username}).select('+password')
+        try{
+        const foundUser = await User.findOne({username:username}).select('+password')
         if(!foundUser){
-            return `inccorrect username or password`
+            return {
+                _id:'none',
+                username:'user was not found',
+                email:'user was not found',
+                signup_date:'user was not found',
+                token:'none'
+            }
         }
+        console.log(password)
+        console.log(foundUser.password)
 
         const isMatch = bcrypt.compare(foundUser.password,password)
-
+        console.log(isMatch)
         if(isMatch){
-            const token = jwt.sign({_id:createdUser._id},'supersecretwaffles',{
+            const token = jwt.sign({_id:foundUser._id},'supersecretwaffles',{
                 expiresIn:'1d',
             })
-            return {...foundUser,token}
+            return {
+                _id:foundUser._id,
+                username:foundUser.username,
+                email:foundUser.email,
+                signup_date:foundUser.signup_date.toDateString(),
+                token,
+            }
         }else{
-            return `password is not correct`
+            return {
+                _id:'None',
+                username:'password is incorrect',
+                email:'password is incorrect',
+                signup_date:'password is incorrect',
+                token:'none'
+            }
+        }
+        }catch(err){
+            return {
+                _id:'None',
+                username:err.toString(),
+                email:err.toString(),
+                signup_date:err.toString(),
+                token:'none'
+            }
         }
     },
     createReview: async (parent,{title,content,product,user})=>{
