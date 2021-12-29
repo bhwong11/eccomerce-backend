@@ -24,7 +24,6 @@ module.exports = {
                     token:'none'
                 }
             }
-            console.log('PASSWORD',password)
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password,salt);
             const user = await User.create({username,email,password:hash})
@@ -54,11 +53,8 @@ module.exports = {
                 token:'none'
             }
         }
-        console.log(password)
-        console.log(foundUser.password)
 
         const isMatch = bcrypt.compare(foundUser.password,password)
-        console.log(isMatch)
         if(isMatch){
             const token = jwt.sign({_id:foundUser._id},'supersecretwaffles',{
                 expiresIn:'1d',
@@ -166,17 +162,22 @@ module.exports = {
     },
     createCategory: async(parent,{title})=>{
         try{
-            const newCategory = await Category.create(title)
+            const newCategory = await Category.create({name:title})
+            console.log(newCategory)
             return newCategory
         }catch(err){
             console.log(err)
-            return `error occured ${err}`
+            return {
+                _id:'none',
+                name:err.toString(),
+                products:'none',
+            }
         }
     },
     updateCategory: async(parent,{id,title})=>{
         try{
-            const updatedCategory = await Category.findByIdAndUpate(id,{
-                title
+            const updatedCategory = await Category.findByIdAndUpdate(id,{
+                name:title
             },{new:true})
             return updatedCategory
         }catch(err){
