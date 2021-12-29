@@ -11,20 +11,20 @@ type Review{
     _id:ID!
     title:String!
     content:String!
-    product:Product!
-    user:User!
+    product:ID!
+    user:ID!
 }
 
 type Cart{
     _id:ID!
     user:ID!
-    products:[Product!]
+    products:[ID!]
 }
 
 type Category{
     _id:ID!
     name:String!
-    products:[Product!]
+    products:[ID!]
 }
 
 type Product{
@@ -33,6 +33,6 @@ type Product{
     price:Int!
     image:String!
     description:String!
-    user:User!
-    category:Category!
+    user:ID!
+    category:ID!
 }`

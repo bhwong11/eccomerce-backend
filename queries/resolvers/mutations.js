@@ -207,7 +207,15 @@ module.exports = {
             return newProduct
         }catch(err){
             console.log(err)
-            return `error occured ${err}`
+            return {
+                _id:'none',
+                title:err.toString(),
+                price:0,
+                image:'error',
+                description:'error',
+                user:'none',
+                category:'none',
+            }
         }
     },
     updateProduct:async(parent,{id,title,price,image,description,user,category})=>{
@@ -223,7 +231,15 @@ module.exports = {
             return updatedProduct
         }catch(err){
             console.log(err)
-            return `error occured ${err}`
+            return {
+                _id:'none',
+                title:err.toString(),
+                price:0,
+                image:'error',
+                description:'error',
+                user:'none',
+                category:'none',
+            }
         }
     },
     deleteProduct:async(parent,{id})=>{
@@ -232,7 +248,15 @@ module.exports = {
             return deletedProduct
         }catch(err){
             console.log(err)
-            return `error occured ${err}`
+            return {
+                _id:'none',
+                title:err.toString(),
+                price:0,
+                image:'error',
+                description:'error',
+                user:'none',
+                category:'none',
+            }
         }
     },
 }
