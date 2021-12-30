@@ -1,10 +1,10 @@
 module.exports = `type Query{
-    user(id:ID!):User!
-    reviews:[Review!]
-    review(id:ID!):Review!
-    cart(id:ID!):Cart!
-    categories:[Category!]
-    category(id:ID!):Category!
-    products:[Product!]
-    product(id:ID!):Product!
+    user(id:ID!):QueryUser!
+    reviews:[QueryReview!]
+    review(id:ID!):QueryReview!
+    cart(id:ID!):QueryCart!
+    categories:[QueryCategory!]
+    category(id:ID!):QueryCategory!
+    products:[QueryProduct!]
+    product(id:ID!):QueryProduct!
 }`

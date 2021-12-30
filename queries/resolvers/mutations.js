@@ -37,7 +37,13 @@ module.exports = {
             }
         }catch(err){
             console.log(err)
-            return `error occured ${err}`
+            return {
+                _id:'None',
+                username:err.toString(),
+                email:err.toString(),
+                signup_date:'none',
+                token:'none'
+            }
         }
         
     },

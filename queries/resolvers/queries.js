@@ -5,15 +5,27 @@ module.exports = {
     user:async (parent,{id})=>{
         try{
             const user = await User.findById(id);
-            return {user,token:''}
+            return {
+                _id:user._id,
+                username:user.username,
+                email:user.email,
+                signup_date:user.signup_date.toDateString(),
+                token:'none'
+            }
         }catch(err){
             console.log(err)
-            return err
+            return {
+                _id:'none',
+                username:err.toString(),
+                email:err.toString(),
+                signup_date:'none',
+                token:'none'
+            }
         }
     },
     reviews:async ()=>{
         try{
-            const reviews = Review.find({})
+            const reviews = Review.find({}).populate('user').populate('product')
             return reviews;
         }catch(err){
             console.log(err)
@@ -22,7 +34,7 @@ module.exports = {
     },
     review:async (parent,{id})=>{
         try{
-            const review = await Review.findById(id)
+            const review = await Review.findById(id).populate('user').populate('product')
             return review
         }catch(err){
             console.log(err)
@@ -31,7 +43,7 @@ module.exports = {
     },
     cart:async (parent,{id})=>{
         try{
-            const cart = await Cart.findById(id)
+            const cart = await Cart.findById(id).populate('user').populate('products')
             return cart
         }catch(err){
             console.log(err)
@@ -50,8 +62,8 @@ module.exports = {
     },
     category:async (parent,{id})=>{
         try{
-            const Category = await Category.findById(id)
-            return Category
+            const category = await Category.findById(id)
+            return category
         }catch(err){
             console.log(err)
             return err
