@@ -49,6 +49,7 @@ module.exports = {
     },
     loginUser:async (parent,{username,password})=>{
         try{
+        console.log('HIT LOGIN USER')
         const foundUser = await User.findOne({username:username}).select('+password')
         if(!foundUser){
             return {

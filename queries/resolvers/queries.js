@@ -71,7 +71,7 @@ module.exports = {
     },
     products:async ()=>{
         try{
-            const products = await Product.find({})
+            const products = await Product.find({}).populate('user').populate('category')
             return products
         }catch(err){
             console.log(err)

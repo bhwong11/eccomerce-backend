@@ -24,7 +24,6 @@ type Cart{
 type Category{
     _id:ID!
     name:String!
-    products:[ID!]
 }
 
 type Product{
