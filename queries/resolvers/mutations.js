@@ -7,9 +7,11 @@ module.exports = {
             const foundUserEmail = await User.findOne({email:email})
             if(foundUserEmail){
                 return {
-                    _id:'None',
+                    _id:'none',
                     username:'user with that email already exist',
                     email:'user with that email already exist',
+                    cart:'none',
+                    admin:false,
                     signup_date:'user with that email already exist',
                     token:'none'
                 }
@@ -20,6 +22,8 @@ module.exports = {
                     _id:'None',
                     username:'username already exist',
                     email:'username already exist',
+                    cart:'none',
+                    admin:false,
                     signup_date:'username already exist',
                     token:'none'
                 }
@@ -27,11 +31,14 @@ module.exports = {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(password,salt);
             const user = await User.create({username,email,password:hash})
-            const newCart = await Cart.create({user:user.id,products:[]})
+            const newCart = await Cart.create({user:user._id,products:[]})
+            await User.FindByIdAndUpdate(user._id,{cart:newCart._id},{new:true})
             return {
                 _id:user._id,
                 username:user.username,
                 email:user.email,
+                cart:newCart._id,
+                admin:user.admin,
                 signup_date:user.signup_date.toDateString(),
                 token:'none'
             }
@@ -41,6 +48,8 @@ module.exports = {
                 _id:'None',
                 username:err.toString(),
                 email:err.toString(),
+                cart:newCart._id,
+                admin:false,
                 signup_date:'none',
                 token:'none'
             }
@@ -56,6 +65,8 @@ module.exports = {
                 _id:'none',
                 username:'user was not found',
                 email:'user was not found',
+                cart:'none',
+                admin:false,
                 signup_date:'user was not found',
                 token:'none'
             }
@@ -70,6 +81,8 @@ module.exports = {
                 _id:foundUser._id,
                 username:foundUser.username,
                 email:foundUser.email,
+                cart:foundUser.cart,
+                admin:foundUser.admin,
                 signup_date:foundUser.signup_date.toDateString(),
                 token,
             }
@@ -78,6 +91,8 @@ module.exports = {
                 _id:'None',
                 username:'password is incorrect',
                 email:'password is incorrect',
+                cart:'none',
+                admin:false,
                 signup_date:'password is incorrect',
                 token:'none'
             }
@@ -87,6 +102,8 @@ module.exports = {
                 _id:'None',
                 username:err.toString(),
                 email:err.toString(),
+                cart:'none',
+                admin:false,
                 signup_date:err.toString(),
                 token:'none'
             }

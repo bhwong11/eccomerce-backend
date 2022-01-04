@@ -4,6 +4,8 @@ type User{
     username:String!
     email:String!
     signup_date:String!
+    cart:ID!
+    admin:Boolean!
     token:String!
 }
 
@@ -40,6 +42,7 @@ type QueryUser{
     _id:ID!
     username:String!
     email:String!
+    Cart:ID!
     signup_date:String!
     token:String!
 }

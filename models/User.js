@@ -17,6 +17,14 @@ const UserSchema = new mongoose.Schema({
         required:true,
         select:false,
     },
+    cart:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Cart',
+    },
+    admin:{
+        type:Boolean,
+        default:false,
+    },
     signup_date:{
         type:Date,
         default:Date.now,
