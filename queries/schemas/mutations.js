@@ -8,8 +8,8 @@ module.exports  = `type Mutation{
     removeFromCart(id:ID!,product:ID!):Cart!
     updateCart(id:ID!,products:[ID]):Cart!
     deleteCart(id:ID!):Cart!
-    createCategory(title:String!):Category!
-    updateCategory(id:ID!,title:String!):Category
+    createCategory(name:String!):Category!
+    updateCategory(id:ID!,name:String!):Category
     deleteCategory(id:ID!):Category!
     createProduct(title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!
     updateProduct(id:ID!,title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!

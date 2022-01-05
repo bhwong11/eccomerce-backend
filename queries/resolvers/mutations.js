@@ -32,7 +32,7 @@ module.exports = {
             const hash = await bcrypt.hash(password,salt);
             const user = await User.create({username,email,password:hash})
             const newCart = await Cart.create({user:user._id,products:[]})
-            await User.FindByIdAndUpdate(user._id,{cart:newCart._id},{new:true})
+            await User.findByIdAndUpdate(user._id,{cart:newCart._id},{new:true})
             return {
                 _id:user._id,
                 username:user.username,
@@ -77,6 +77,7 @@ module.exports = {
             const token = jwt.sign({_id:foundUser._id},'supersecretwaffles',{
                 expiresIn:'1d',
             })
+            console.log('found User',foundUser)
             return {
                 _id:foundUser._id,
                 username:foundUser.username,
@@ -186,9 +187,9 @@ module.exports = {
             return `error occured ${err}`
         }
     },
-    createCategory: async(parent,{title})=>{
+    createCategory: async(parent,{name})=>{
         try{
-            const newCategory = await Category.create({name:title})
+            const newCategory = await Category.create({name:name})
             console.log(newCategory)
             return newCategory
         }catch(err){
@@ -196,14 +197,13 @@ module.exports = {
             return {
                 _id:'none',
                 name:err.toString(),
-                products:'none',
             }
         }
     },
-    updateCategory: async(parent,{id,title})=>{
+    updateCategory: async(parent,{id,name})=>{
         try{
             const updatedCategory = await Category.findByIdAndUpdate(id,{
-                name:title
+                name:name
             },{new:true})
             return updatedCategory
         }catch(err){
