@@ -33,6 +33,7 @@ module.exports = {
             const user = await User.create({username,email,password:hash})
             const newCart = await Cart.create({user:user._id,products:[]})
             await User.findByIdAndUpdate(user._id,{cart:newCart._id},{new:true})
+            console.log('Register worked',user)
             return {
                 _id:user._id,
                 username:user.username,
