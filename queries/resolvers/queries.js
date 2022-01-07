@@ -55,6 +55,7 @@ module.exports = {
         }
     },
     categories:async ()=>{
+        console.log('HIT CATEGORIES ROUTE')
         try{
             const categories = await Category.find({})
             return categories
@@ -65,6 +66,7 @@ module.exports = {
 
     },
     category:async (parent,{id})=>{
+        console.log('HIT CATEGORy ROUTE')
         try{
             const category = await Category.findById(id)
             return category
