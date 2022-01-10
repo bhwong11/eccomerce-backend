@@ -151,6 +151,7 @@ module.exports = {
     addToCart:async(parent,{id,product})=>{
         try{
             const updatedCart = await Cart.findByIdAndUpdate(id,{$push:{ products:product}},{new:true});
+            console.log(updatedCart)
             return updatedCart
         }catch(err){
             console.log(err)
@@ -171,6 +172,18 @@ module.exports = {
         try{
             const updatedCart = await Cart.findByIdAndUpdate(id,{
                 products
+            },{new:true})
+            console.log(updatedCart)
+            return updatedCart
+        }catch(err){
+            console.log(err)
+            return `error occured ${err}`
+        }
+    },
+    clearCart:async(parent,{id})=>{
+        try{
+            const updatedCart = await Cart.findByIdAndUpdate(id,{
+                products:[]
             },{new:true})
             console.log(updatedCart)
             return updatedCart

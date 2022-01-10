@@ -6,6 +6,7 @@ module.exports  = `type Mutation{
     deleteReview(id:ID!):Review!
     addToCart(id:ID!,product:ID!):Cart!
     removeFromCart(id:ID!,product:ID!):Cart!
+    clearCart(id:ID!):Cart!
     updateCart(id:ID!,products:[ID]):Cart!
     deleteCart(id:ID!):Cart!
     createCategory(name:String!):Category!

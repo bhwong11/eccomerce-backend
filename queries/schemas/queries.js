@@ -1,6 +1,7 @@
 module.exports = `type Query{
     user(id:ID!):QueryUser!
     reviews:[QueryReview!]
+    reviewsProductSearch(id:ID!):[QueryReview!]
     review(id:ID!):QueryReview!
     cart(id:ID!):QueryCart!
     categories:[QueryCategory!]

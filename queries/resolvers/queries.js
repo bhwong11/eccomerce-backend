@@ -29,7 +29,16 @@ module.exports = {
     },
     reviews:async ()=>{
         try{
-            const reviews = Review.find({}).populate('user').populate('product')
+            const reviews = await Review.find({}).populate('user').populate('product')
+            return reviews;
+        }catch(err){
+            console.log(err)
+            return err
+        }
+    },
+    reviewsProductSearch:async (parent,{id})=>{
+        try{
+            const reviews = await Review.find({product:id}).populate('user').populate('product')
             return reviews;
         }catch(err){
             console.log(err)
