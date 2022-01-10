@@ -83,10 +83,20 @@ module.exports = {
         }
 
     },
+    productsCategorySearch:async (parent,{id})=>{
+        try{
+            const products = await Product.find({category:id}).populate('user').populate('category')
+            return products
+        }catch(err){
+            console.log(err)
+            return err
+        }
+
+    },
     product:async (parent,{id})=>{
         try{
             console.log('asfdasdfasdf')
-            const product = await Product.findById(id)
+            const product = await Product.findById(id).populate('category').populate('user')
             console.log('PROUDCT',product)
             return product
         }catch(err){

@@ -6,5 +6,6 @@ module.exports = `type Query{
     categories:[QueryCategory!]
     category(id:ID!):QueryCategory!
     products:[QueryProduct!]
+    productsCategorySearch(id:ID!):[QueryProduct!]
     product(id:ID!):QueryProduct!
 }`
