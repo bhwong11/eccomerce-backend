@@ -160,7 +160,11 @@ module.exports = {
     },
     removeFromCart:async(parent,{id,product})=>{
         try{
-            const updatedCart = await Cart.findByIdAndUpdate(id,{$pull:{ products:product}},{new:true});
+            const cart = await Cart.findById(id)
+            let productsCopy = cart.products
+            let index = productsCopy.indexOf(product)
+            productsCopy.splice(index,1)
+            const updatedCart = await Cart.findByIdAndUpdate(id,{ products:productsCopy},{new:true});
             console.log(updatedCart)
             return updatedCart
         }catch(err){
