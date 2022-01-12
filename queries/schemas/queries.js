@@ -9,4 +9,5 @@ module.exports = `type Query{
     products:[QueryProduct!]
     productsCategorySearch(id:ID!):[QueryProduct!]
     product(id:ID!):QueryProduct!
+    stripeKey(amount:Int!):String!
 }`

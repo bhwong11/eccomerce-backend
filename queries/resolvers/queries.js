@@ -1,6 +1,9 @@
 const {Product, Review, User, Cart, Category }= require('../../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const stripe = require('stripe')(process.env.STRIPE_SK);
+
 module.exports = {
     user:async (parent,{id})=>{
         try{
@@ -114,4 +117,12 @@ module.exports = {
         }
     }
     ,
+    stripeKey:async (parent,{amount})=>{
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount,
+            currency: 'usd',
+            payment_method_types: ['card'],
+          });
+        return paymentIntent.client_secret
+    }
 }
