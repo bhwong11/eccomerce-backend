@@ -118,11 +118,13 @@ module.exports = {
     }
     ,
     stripeKey:async (parent,{amount})=>{
+        console.log('AMOUNT',amount)
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount,
+            amount: amount*100,
             currency: 'usd',
             payment_method_types: ['card'],
           });
+          console.log('payment',paymentIntent)
         return paymentIntent.client_secret
     }
 }
