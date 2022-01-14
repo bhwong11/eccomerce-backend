@@ -248,6 +248,7 @@ module.exports = {
                 user,
                 category,
             })
+            console.log(newProduct)
             return newProduct
         }catch(err){
             console.log(err)

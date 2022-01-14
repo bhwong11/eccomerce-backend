@@ -120,7 +120,7 @@ module.exports = {
     stripeKey:async (parent,{amount})=>{
         console.log('AMOUNT',amount)
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount*100,
+            amount: amount,
             currency: 'usd',
             payment_method_types: ['card'],
           });
