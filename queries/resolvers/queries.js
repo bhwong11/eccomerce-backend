@@ -13,7 +13,7 @@ module.exports = {
                 username:user.username,
                 email:user.email,
                 cart:user.cart,
-                admin:'none',
+                admin:false,
                 signup_date:user.signup_date.toDateString(),
                 token:'none'
             }
@@ -24,7 +24,7 @@ module.exports = {
                 username:err.toString(),
                 email:err.toString(),
                 cart:'none',
-                admin:'none',
+                admin:false,
                 signup_date:'none',
                 token:'none'
             }

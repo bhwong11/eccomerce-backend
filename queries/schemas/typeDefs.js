@@ -43,6 +43,7 @@ type QueryUser{
     username:String!
     email:String!
     Cart:ID!
+    admin: Boolean!
     signup_date:String!
     token:String!
 }
