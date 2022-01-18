@@ -239,6 +239,7 @@ module.exports = {
         }
     },
     createProduct:async(parent,{title,price,image,description,user,category})=>{
+        console.log('Image!!!',image)
         try{
             const newProduct = await Product.create({
                 title,

@@ -1,4 +1,6 @@
 module.exports = `
+scalar Upload
+
 type User{
     _id:ID!
     username:String!
