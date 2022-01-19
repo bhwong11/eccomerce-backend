@@ -4,7 +4,6 @@ const cors = require('cors');
 const {GraphQLDate} = require('graphql-iso-date');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -19,6 +18,7 @@ const queries = require('./queries')
 
 
 const server = new GraphQLServer({typeDefs:queries.typeDefs,resolvers:queries.resolvers})
+
 
 
 server.start(({port})=>{

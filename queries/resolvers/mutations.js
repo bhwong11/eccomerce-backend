@@ -246,55 +246,34 @@ module.exports = {
         try{
             const multer = require('multer');
             const bucketS3 = require('./aws.connection');
-            const fs = require('fs');
             const util = require('util')
-            const removeFile = util.promisify(fs.unlink);
-            
-
-            const { createWriteStream } = require('fs')
-            const mkdirp= require('mkdirp')
-            const shortid= require('shortid')
+            const fs = require('fs')
+            const path = require('path')
 
         
-            const uploadDir = '../../uploads'
+            const { createReadStream, filename, mimetype, encoding } = await image;
 
-            // Ensure upload directory exists
-            mkdirp.sync(uploadDir)
+            // Invoking the `createReadStream` will return a Readable Stream.
+            // See https://nodejs.org/api/stream.html#stream_readable_streams
+            const stream = createReadStream();
+            const pathName = path.join(__dirname,`/uploads/${filename}`)
+            await stream.pipe(fs.createWriteStream(pathName))
+            //console.log('STREAM',stream)
 
-            const storeUpload = async ({ stream, filename }) => {
-            const id = shortid.generate()
-            const path = `${uploadDir}/${id}-${filename}`
+            // This is purely for demonstration purposes and will overwrite the
+            // local-file-output.txt in the current working directory on EACH upload.
+            //console.log('SHORT ID',shortid.generate())
+            //const out = require('fs').createWriteStream(shortid.generate()+filename);
+            //stream.pipe(out);
+            //const newImage = await out;
+            //console.log('NWQ IMAGE',newImage)
 
-            return new Promise((resolve, reject) =>
-                stream
-                .pipe(createWriteStream(path))
-                .on('finish', () => resolve({ id, path }))
-                .on('error', reject),
-            )
-            }
-
-            const recordFile = file =>
-            db
-                .get('uploads')
-                .push(file)
-                .last()
-                .write()
-
-            const processUpload = async upload => {
-            const { createReadStream, filename, mimetype, encoding } = await upload
-            const stream = createReadStream()
-            const { id, path } = await storeUpload({ stream, filename })
-            return recordFile({ id, filename, mimetype, encoding, path })
-            }
-
-
-            const result = await bucketS3.uploadFile(newImage);
-            await removeFile(newImage.image)
+            //const result = await bucketS3.uploadFile(filename);
 
             const newProduct = await Product.create({
                 title,
                 price,
-                image:uri,
+                image:result.uri,
                 description,
                 user,
                 category,
