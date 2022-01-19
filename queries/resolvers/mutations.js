@@ -239,41 +239,12 @@ module.exports = {
         }
     },
     createProduct:async(parent,{title,price,image,description,user,category})=>{
-        console.log('Image!!!',image)
-        const resultImage = await image
-        console.log('RSULT IMAGE',resultImage)
-
-        try{
-            const multer = require('multer');
-            const bucketS3 = require('./aws.connection');
-            const util = require('util')
-            const fs = require('fs')
-            const path = require('path')
-
-        
-            const { createReadStream, filename, mimetype, encoding } = await image;
-
-            // Invoking the `createReadStream` will return a Readable Stream.
-            // See https://nodejs.org/api/stream.html#stream_readable_streams
-            const stream = createReadStream();
-            const pathName = path.join(__dirname,`/uploads/${filename}`)
-            await stream.pipe(fs.createWriteStream(pathName))
-            //console.log('STREAM',stream)
-
-            // This is purely for demonstration purposes and will overwrite the
-            // local-file-output.txt in the current working directory on EACH upload.
-            //console.log('SHORT ID',shortid.generate())
-            //const out = require('fs').createWriteStream(shortid.generate()+filename);
-            //stream.pipe(out);
-            //const newImage = await out;
-            //console.log('NWQ IMAGE',newImage)
-
-            //const result = await bucketS3.uploadFile(filename);
-
+        try{     
+            console.log('CATEGORY',category)
             const newProduct = await Product.create({
                 title,
                 price,
-                image:result.uri,
+                image,
                 description,
                 user,
                 category,

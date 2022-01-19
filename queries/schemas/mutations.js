@@ -12,7 +12,7 @@ module.exports  = `type Mutation{
     createCategory(name:String!):Category!
     updateCategory(id:ID!,name:String!):Category
     deleteCategory(id:ID!):Category!
-    createProduct(title:String!,price:Int!,image:Upload,description:String!,user:ID!,category:ID!):Product!
+    createProduct(title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!
     updateProduct(id:ID!,title:String!,price:Int!,image:String!,description:String!,user:ID!,category:ID!):Product!
     deleteProduct(id:ID!):Product!
 }`
