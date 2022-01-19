@@ -258,9 +258,6 @@ module.exports = {
         
             const uploadDir = '../../uploads'
 
-
-
-
             // Ensure upload directory exists
             mkdirp.sync(uploadDir)
 
@@ -290,8 +287,7 @@ module.exports = {
             return recordFile({ id, filename, mimetype, encoding, path })
             }
 
-            let newImage = await processUpload(image)
-            console.log('PROCESS U)LOAD',newImage)
+
             const result = await bucketS3.uploadFile(newImage);
             await removeFile(newImage.image)
 
