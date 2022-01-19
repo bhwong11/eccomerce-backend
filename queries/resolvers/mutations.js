@@ -242,18 +242,58 @@ module.exports = {
         console.log('Image!!!',image)
         const resultImage = await image
         console.log('RSULT IMAGE',resultImage)
-        const { extname } = require('path');
-        const { v4: uuid } = require('uuid'); // (A)
-        const s3 = require('./s3'); // (B)
-        const { imageUploader } = require('./uploaders');
 
         try{
-            const { createReadStream, filename, mimetype, encoding } = await image;
-            console.log('FILENAME',filename)
-            const uri = await imageUploader.upload(createReadStream(), {
-                filename,
-                mimetype,
-              });
+            const multer = require('multer');
+            const bucketS3 = require('./aws.connection');
+            const fs = require('fs');
+            const util = require('util')
+            const removeFile = util.promisify(fs.unlink);
+            
+
+            const { createWriteStream } = require('fs')
+            const mkdirp= require('mkdirp')
+            const shortid= require('shortid')
+
+        
+            const uploadDir = '../../uploads'
+
+
+
+
+            // Ensure upload directory exists
+            mkdirp.sync(uploadDir)
+
+            const storeUpload = async ({ stream, filename }) => {
+            const id = shortid.generate()
+            const path = `${uploadDir}/${id}-${filename}`
+
+            return new Promise((resolve, reject) =>
+                stream
+                .pipe(createWriteStream(path))
+                .on('finish', () => resolve({ id, path }))
+                .on('error', reject),
+            )
+            }
+
+            const recordFile = file =>
+            db
+                .get('uploads')
+                .push(file)
+                .last()
+                .write()
+
+            const processUpload = async upload => {
+            const { createReadStream, filename, mimetype, encoding } = await upload
+            const stream = createReadStream()
+            const { id, path } = await storeUpload({ stream, filename })
+            return recordFile({ id, filename, mimetype, encoding, path })
+            }
+
+            let newImage = await processUpload(image)
+            console.log('PROCESS U)LOAD',newImage)
+            const result = await bucketS3.uploadFile(newImage);
+            await removeFile(newImage.image)
 
             const newProduct = await Product.create({
                 title,
