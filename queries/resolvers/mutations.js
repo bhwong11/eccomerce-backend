@@ -240,11 +240,25 @@ module.exports = {
     },
     createProduct:async(parent,{title,price,image,description,user,category})=>{
         console.log('Image!!!',image)
+        const resultImage = await image
+        console.log('RSULT IMAGE',resultImage)
+        const { extname } = require('path');
+        const { v4: uuid } = require('uuid'); // (A)
+        const s3 = require('./s3'); // (B)
+        const { imageUploader } = require('./uploaders');
+
         try{
+            const { createReadStream, filename, mimetype, encoding } = await image;
+            console.log('FILENAME',filename)
+            const uri = await imageUploader.upload(createReadStream(), {
+                filename,
+                mimetype,
+              });
+
             const newProduct = await Product.create({
                 title,
                 price,
-                image,
+                image:uri,
                 description,
                 user,
                 category,
